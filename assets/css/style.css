@@ -5,6 +5,9 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 
 .answer {
     background-color: aquamarine;
+    text-align: center;
+    border: 5px solid white;
+    cursor: pointer;
 }
 
 header {
@@ -16,5 +19,21 @@ header {
     position: absolute;
     right: 50px;
     top: 50px;
+}
+
+#cancel {
     display: none;
+}
+
+#submit {
+    display: none;
+}
+
+main {
+    background-color: bisque;
+    margin-top: 100px;
+}
+
+form {
+    display:none;
 }

@@ -8,11 +8,15 @@ let nameInput = document.getElementById("nameInput");
 let questionLabel = document.getElementById("question");
 let answers = document. querySelectorAll(".answer")
 let quizSpace = document.getElementById("quiz");
-let gamesPlayed = 0
-/*let highScores = [
-  highscore1 = {name],
-  scores: []
-}*/
+let check = document.getElementById("correct");
+let secondsLeft = 0;
+let gamesPlayed = 0;
+
+let highScores = [
+  {name: "",
+  score: 0
+}
+]
 
 let questions = [
   {
@@ -42,28 +46,46 @@ let questions = [
   }]
   ;
 
+  function endCard() {
+
+    timer.setAttribute("display", "none");
+    questionLabel.textContent = "You got " + correct + " answers correct.";
+  
+  answers[0].textContent = "";
+  answers[1].textContent = "";
+  answers[2].textContent = "";
+  answers[3].textContent = "If you would like to submit your score, click Submit. If not, click Cancel."
+  check.textContent = "";
+  
+  nameInput.setAttribute("style", "display: block");
+  submitButton.setAttribute("style", "display: block");
+  cancelButton.setAttribute("style", "display: block");
+
+  }
+  
+
 function setTime() {
-  // Sets interval in variable
-  var secondsLeft = 60;
+
   var timerInterval = setInterval(function() {
     secondsLeft--;
     //timer.setAttribute("display", "inline");
     timer.textContent = secondsLeft + " seconds remaining";
 
-    if(secondsLeft === 0) {
-      // Stops execution of action at set interval
+    if(secondsLeft <= 0) {
+      //Once timer expires, quiz ends; calls function to display score
       clearInterval(timerInterval);
-      // Calls function to create and append image
-      endCard()
+      endCard();
     }
 
   }, 1000);
+
+  return secondsLeft;
 }
 
 
 function startQuiz() {
   startButton.setAttribute("style", "display:none");
-
+secondsLeft = 60;
 setTime();
 generateQuestion();
 
@@ -93,66 +115,70 @@ for (i=0; i<4; i++) {
 
  quizSpace.addEventListener("click", function(event) {
   let element = event.target;
+  //if the answer key matches the id of the element clicked, mark it correct
 
  if (element.matches("#answer1") && questions[random].answerkey == 0) {
-  // Get the current value of the image's data-state attribute
-  //if (questions[random].answerkey = ) if the answer key matches the id of the element clicked, mark it correct
   correct++;
-  generateQuestion();
+  console.log(correct);
+  check.textContent = "Correct!"
  }
   else if (element.matches("#answer2") && questions[random].answerkey == 1) {
     correct++;
-    generateQuestion();
+    console.log(correct);
+    check.textContent = "Correct!"
   }
   else if (element.matches("#answer3") && questions[random].answerkey == 2) {
     correct++;
-    generateQuestion();
-  }
+    console.log(correct);
+    check.textContent = "Correct!"
+   }
   else if (element.matches("#answer4") && questions[random].answerkey == 3) {
     correct++;
-    generateQuestion();
+    console.log(correct);
+    check.textContent = "Correct!"
   }
   else {
+      console.log(correct);
+    check.textContent = "Incorrect!"
     secondsLeft-=5;
-    generateQuestion();
   }
 
+  //Generate a new question
+  generateQuestion();
 })
 
-//Once timer expires, quiz ends
+
 //Scores are logged to list of high scores
 //button to log scores and button to clear scores
 //button to return to quiz page
 
-function endCard() {
-
-  timer.setAttribute("display", "none");
-questionLabel.textContent = "You got " + correct + " answers correct.";
-
-answers[0].textContent = ""
-
-nameInput.setAttribute("display", "block")
-submitButton.setAttribute("display", "block")
-cancelButton.setAttribute("display", "block")
-
-
-}
 
 
 function displayHighScores() {
   questionLabel.textContent = "High Scores";
-  //answer[0].textContent = "High Scores"
-  for (i=0; i < totalHighScores;i++) {
-    //generate list of high scores
+  if (highScores.name.length>0) {
+    highScores = localStorage.getItem("highScores", JSON.parse(highScores));
+  }
 
+  highScores.forEach((e) => {
+    answer[0].textContent += highScores.name + "   " + highScores.score + "\n";
+})
+
+    startButton.setAttribute("style", "display:block");
+    startButton.textContent = "Restart";
 }
-}
+
 
 submitButton.addEventListener("click", function(event) {
   //add score to score array
-  name = nameInput.value;
-  totalHighScores++;
-  //highScores.names.push
-  //highScores.scores.push
+  name = nameInput.value.trim();
+  //totalHighScores++;
+    highScores.push({name:highScores.name, correct:highScores.score});
+
   //sort arrays
+  highScores.sort((a, b) => {
+    return b.score - a.score;
+  })
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+  displayHighScores();
 })}
