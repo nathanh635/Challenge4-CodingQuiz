@@ -1,16 +1,18 @@
 let correct = 0, totalQuestionsAsked = 0, percent = 0; questionnumber = 0;
-let name = "";
+let newName = "";
 let timer = document.getElementById("timer");
 let startButton = document.getElementById("start");
 let submitButton = document.getElementById("submit");
 let cancelButton = document.getElementById("cancel");
 let nameInput = document.getElementById("nameInput");
+let nameInputForm = document.getElementById("nameInputForm")
 let questionLabel = document.getElementById("question");
 let answers = document. querySelectorAll(".answer")
 let quizSpace = document.getElementById("quiz");
 let check = document.getElementById("correct");
 let secondsLeft = 0;
 let gamesPlayed = 0;
+let randomNumber = 0;
 
 let highScores = [
   {name: "",
@@ -58,12 +60,10 @@ let questions = [
   check.textContent = "";
   
   nameInput.setAttribute("style", "display: block");
-  submitButton.setAttribute("style", "display: block");
-  cancelButton.setAttribute("style", "display: block");
-
+  submitButton.setAttribute("style", "display: inline");
+  cancelButton.setAttribute("style", "display: inline");
   }
   
-
 function setTime() {
 
   var timerInterval = setInterval(function() {
@@ -74,6 +74,7 @@ function setTime() {
     if(secondsLeft <= 0) {
       //Once timer expires, quiz ends; calls function to display score
       clearInterval(timerInterval);
+      timer.textContent = "0 seconds remaining";
       endCard();
     }
 
@@ -85,9 +86,9 @@ function setTime() {
 
 function startQuiz() {
   startButton.setAttribute("style", "display:none");
-secondsLeft = 60;
-setTime();
-generateQuestion();
+  secondsLeft = 60;
+  setTime();
+randomNumber = generateQuestion();
 
 }
 
@@ -108,44 +109,14 @@ questionLabel.textContent = questions[random].question;
 for (i=0; i<4; i++) {
   answers[i].textContent = questions[random].answers[i];
 }
+return random;
+}
 
 //need to ensure same question not asked multiple times
 
  // Check if the clicked element was an image
 
- quizSpace.addEventListener("click", function(event) {
-  let element = event.target;
-  //if the answer key matches the id of the element clicked, mark it correct
 
- if (element.matches("#answer1") && questions[random].answerkey == 0) {
-  correct++;
-  console.log(correct);
-  check.textContent = "Correct!"
- }
-  else if (element.matches("#answer2") && questions[random].answerkey == 1) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-  }
-  else if (element.matches("#answer3") && questions[random].answerkey == 2) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-   }
-  else if (element.matches("#answer4") && questions[random].answerkey == 3) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-  }
-  else {
-      console.log(correct);
-    check.textContent = "Incorrect!"
-    secondsLeft-=5;
-  }
-
-  //Generate a new question
-  generateQuestion();
-})
 
 
 //Scores are logged to list of high scores
@@ -171,7 +142,7 @@ function displayHighScores() {
 
 submitButton.addEventListener("click", function(event) {
   //add score to score array
-  name = nameInput.value.trim();
+  newName = nameInputForm.val
   //totalHighScores++;
     highScores.push({name:highScores.name, correct:highScores.score});
 
@@ -181,4 +152,42 @@ submitButton.addEventListener("click", function(event) {
   })
   localStorage.setItem("highScores", JSON.stringify(highScores));
   displayHighScores();
-})}
+})
+
+quizSpace.addEventListener("click", function(event) {
+  checkAnswer(randomNumber);
+  generateQuestion();
+})
+
+function checkAnswer(randomNumber) {
+  let element = event.target;
+  //if the answer key matches the id of the element clicked, mark it correct
+
+ if (element.matches("#answer1") && questions[randomNumber].answerkey == 0) {
+  correct++;
+  console.log(correct);
+  check.textContent = "Correct!"
+
+ }
+  else if (element.matches("#answer2") && questions[randomNumber].answerkey == 1) {
+    correct++;
+    console.log(correct);
+    check.textContent = "Correct!"
+  }
+  else if (element.matches("#answer3") && questions[randomNumber].answerkey == 2) {
+    correct++;
+    console.log(correct);
+    check.textContent = "Correct!"
+   }
+  else if (element.matches("#answer4") && questions[randomNumber].answerkey == 3) {
+    correct++;
+    console.log(correct);
+    check.textContent = "Correct!"
+  }
+  else {
+      console.log(correct);
+    check.textContent = "Incorrect!"
+    secondsLeft-=5;
+  }
+
+}
