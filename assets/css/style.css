@@ -1,0 +1,20 @@
+* {
+font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+.answer {
+    background-color: aquamarine;
+}
+
+header {
+    background-color: aquamarine;
+    text-align: center;
+}
+
+#timer {
+    position: absolute;
+    right: 50px;
+    top: 50px;
+    display: none;
+}
