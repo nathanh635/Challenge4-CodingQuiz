@@ -1,11 +1,9 @@
 let correct = 0, totalQuestionsAsked = 0, percent = 0; questionnumber = 0;
-let newName = "";
 let timer = document.getElementById("timer");
 let startButton = document.getElementById("start");
 let submitButton = document.getElementById("submit");
 let cancelButton = document.getElementById("cancel");
-let nameInput = document.getElementById("nameInput");
-let nameInputForm = document.getElementById("nameInputForm")
+let nameInputForm = document.querySelector("#nameInputForm");
 let questionLabel = document.getElementById("question");
 let answers = document. querySelectorAll(".answer")
 let quizSpace = document.getElementById("quiz");
@@ -16,7 +14,7 @@ let randomNumber = 0;
 
 let highScores = [
   {name: "",
-  score: 0
+  correct: 0
 }
 ]
 
@@ -49,6 +47,8 @@ let questions = [
   ;
 
   function endCard() {
+//quizSpace.removeEventListener("click", answerClick());
+
 
     timer.setAttribute("display", "none");
     questionLabel.textContent = "You got " + correct + " answers correct.";
@@ -89,8 +89,13 @@ function startQuiz() {
   secondsLeft = 60;
   setTime();
 randomNumber = generateQuestion();
-
+//quizSpace.addEventListener("click", answerClick())
 }
+
+// function answerClick() {
+//   checkAnswer(randomNumber);
+//   generateQuestion();
+// }
 
 startButton.addEventListener("click", function(event) {
   startQuiz();
@@ -114,12 +119,6 @@ return random;
 
 //need to ensure same question not asked multiple times
 
- // Check if the clicked element was an image
-
-
-
-
-//Scores are logged to list of high scores
 //button to log scores and button to clear scores
 //button to return to quiz page
 
@@ -127,13 +126,19 @@ return random;
 
 function displayHighScores() {
   questionLabel.textContent = "High Scores";
-  if (highScores.name.length>0) {
-    highScores = localStorage.getItem("highScores", JSON.parse(highScores));
-  }
+  nameInput.setAttribute("style", "display: none");
+  submitButton.setAttribute("style", "display: none");
+  cancelButton.setAttribute("style", "display: none");
 
-  highScores.forEach((e) => {
-    answer[0].textContent += highScores.name + "   " + highScores.score + "\n";
-})
+  console.log(highScores);
+  highScores = localStorage.getItem("highScores", JSON.parse(highScores));
+  
+
+  answers[0].setAttribute('style','white-space: pre;')
+
+  for (let i = 0; i<highScores.length; i++) {
+    answers[0].textContent += highScores[i].name + "   " + highScores[i].correct + "\r\n";
+}
 
     startButton.setAttribute("style", "display:block");
     startButton.textContent = "Restart";
@@ -142,17 +147,42 @@ function displayHighScores() {
 
 submitButton.addEventListener("click", function(event) {
   //add score to score array
-  newName = nameInputForm.val
+  let newName = nameInputForm.value;
   //totalHighScores++;
-    highScores.push({name:highScores.name, correct:highScores.score});
+  let obj = {
+    name: nameInputForm.value,
+    correct: correct
+  }
+    if (highScores[0].name == "") {
+      highScores[0].name = nameInputForm.value;
+      highScores[0].correct = correct;
+     } else {
+      highScores.push(obj);
+     }
+    
+correct = 0;
+  //sort array
+  function compare(a, b) {
+    const score1 = a.correct;
+    const score2 = b.correct;
+  
+    let comparison = 0;
+    if (score1 > score2) {
+      comparison = 1;
+    } else if (score1<score2) {
+      comparison = -1;
+    }
+    return comparison;
+    }
+    highScores.sort(compare);
 
-  //sort arrays
-  highScores.sort((a, b) => {
-    return b.score - a.score;
-  })
+
   localStorage.setItem("highScores", JSON.stringify(highScores));
   displayHighScores();
 })
+
+
+
 
 quizSpace.addEventListener("click", function(event) {
   checkAnswer(randomNumber);

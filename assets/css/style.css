@@ -5,9 +5,10 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 
 .answer {
     background-color: aquamarine;
-    text-align: center;
     border: 5px solid white;
     cursor: pointer;
+    width: 300px;
+    margin: auto;
 }
 
 header {
@@ -36,4 +37,8 @@ main {
 
 form {
     display: none;
+}
+
+#quiz {
+    text-align: center;
 }
