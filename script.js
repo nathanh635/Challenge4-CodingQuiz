@@ -47,7 +47,7 @@ let questions = [
   ;
 
   function endCard() {
-//quizSpace.removeEventListener("click", answerClick());
+    quizSpace.removeEventListener("click", answerClick());
 
 
     timer.setAttribute("display", "none");
@@ -68,7 +68,6 @@ function setTime() {
 
   var timerInterval = setInterval(function() {
     secondsLeft--;
-    //timer.setAttribute("display", "inline");
     timer.textContent = secondsLeft + " seconds remaining";
 
     if(secondsLeft <= 0) {
@@ -88,33 +87,31 @@ function startQuiz() {
   startButton.setAttribute("style", "display:none");
   secondsLeft = 60;
   setTime();
-randomNumber = generateQuestion();
-//quizSpace.addEventListener("click", answerClick())
+  randomNumber = generateQuestion();
+  quizSpace.addEventListener("click", answerClick(randomNumber))
 }
 
-// function answerClick() {
-//   checkAnswer(randomNumber);
-//   generateQuestion();
-// }
+function answerClick(randomNumber) {
+  checkAnswer(randomNumber);
+  randomNumber = generateQuestion();
+}
 
 startButton.addEventListener("click", function(event) {
   startQuiz();
 })
 
 function generateQuestion() {
-//select random question
+  //select random question
+  let random = Math.floor(Math.random()*questions.length); //total number of questions
 
-let random = Math.floor(Math.random()*questions.length); //total number of questions
-
-//print question to question label
-questionLabel.textContent = questions[random].question;
+  //print question to question label
+  questionLabel.textContent = questions[random].question;
  
-//set answers in answer boxes
-
-for (i=0; i<4; i++) {
-  answers[i].textContent = questions[random].answers[i];
-}
-return random;
+  //set answers in answer boxes
+  for (i=0; i<4; i++) {
+    answers[i].textContent = questions[random].answers[i];
+  }
+  return random;
 }
 
 //need to ensure same question not asked multiple times
@@ -130,25 +127,23 @@ function displayHighScores() {
   submitButton.setAttribute("style", "display: none");
   cancelButton.setAttribute("style", "display: none");
 
-  console.log(highScores);
+  //Get list of high scores from local storage
   highScores = localStorage.getItem("highScores", JSON.parse(highScores));
   
-
+  //Print list of high scores
   answers[0].setAttribute('style','white-space: pre;')
-
   for (let i = 0; i<highScores.length; i++) {
     answers[0].textContent += highScores[i].name + "   " + highScores[i].correct + "\r\n";
 }
 
-    startButton.setAttribute("style", "display:block");
-    startButton.textContent = "Restart";
+  startButton.setAttribute("style", "display:block");
+  startButton.textContent = "Restart quiz";
 }
 
 
 submitButton.addEventListener("click", function(event) {
-  //add score to score array
-  let newName = nameInputForm.value;
-  //totalHighScores++;
+  //add score to highScores array
+
   let obj = {
     name: nameInputForm.value,
     correct: correct
@@ -161,34 +156,23 @@ submitButton.addEventListener("click", function(event) {
      }
     
 correct = 0;
-  //sort array
-  function compare(a, b) {
-    const score1 = a.correct;
-    const score2 = b.correct;
-  
-    let comparison = 0;
-    if (score1 > score2) {
-      comparison = 1;
-    } else if (score1<score2) {
-      comparison = -1;
-    }
-    return comparison;
-    }
-    highScores.sort(compare);
+  //sort highScores array by score
+        highScores.sort((a, b) => {
+          return b.correct - a.correct;
+        })
 
-
+        //write array highScores to local storage
   localStorage.setItem("highScores", JSON.stringify(highScores));
   displayHighScores();
 })
 
-
-
-
+//Make answer space clickable
 quizSpace.addEventListener("click", function(event) {
   checkAnswer(randomNumber);
-  generateQuestion();
+  randomNumber = generateQuestion();
 })
 
+//Check the answer clicked on
 function checkAnswer(randomNumber) {
   let element = event.target;
   //if the answer key matches the id of the element clicked, mark it correct
@@ -197,7 +181,6 @@ function checkAnswer(randomNumber) {
   correct++;
   console.log(correct);
   check.textContent = "Correct!"
-
  }
   else if (element.matches("#answer2") && questions[randomNumber].answerkey == 1) {
     correct++;
