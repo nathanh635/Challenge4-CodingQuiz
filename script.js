@@ -48,24 +48,23 @@ let questions = [
   ;
 
 function init() {
-  highScores = localStorage.getItem("highScores", JSON.parse(highScores));
+  highScores = JSON.parse(localStorage.getItem("highScores"));
 }
 
 //Start program by loading high scores from storage
 init()
 
   function endCard() {
-    quizSpace.removeEventListener("click", answerClick());
+ 
+    for (i=0; i<4; i++) {
+      answers[i].setAttribute("style", "display:none");
+    }
 
-
-    timer.setAttribute("display", "none");
+    timer.setAttribute("style", "display:none");
     questionLabel.textContent = "You got " + correct + " answers correct.";
   
-    answers[0].textContent = "";
-    answers[1].textContent = "";
-    answers[2].textContent = "";
-    answers[3].textContent = "If you would like to submit your score, click Submit. If not, click Cancel."
-    check.textContent = "";
+
+    check.textContent = "If you would like to submit your score, enter your name and click Submit. If not, click Cancel."
   
     nameInput.setAttribute("style", "display: block");
     submitButton.setAttribute("style", "display: inline");
@@ -78,13 +77,14 @@ function setTime() {
 
   var timerInterval = setInterval(function() {
     secondsLeft--;
-
+    console.log(secondsLeft);
+    
     if(secondsLeft <= 0) {
       //Once timer expires, quiz ends; calls function to display score
       clearInterval(timerInterval);
       timer.textContent = "0 seconds remaining";
       endCard();
-    } else if (secondsLeft = 1) {
+    } else if (secondsLeft == 1) {
         timer.textContent = secondsLeft + " second remaining";
     }
     else {
@@ -104,14 +104,14 @@ startButton.addEventListener("click", function(event) {
 
 function startQuiz() {
   startButton.setAttribute("style", "display:none");
+  for (i=0; i<4; i++) {
+    answers[i].setAttribute("style", "display:block");
+  }
+  check.textContent = "";
+  clearButton.setAttribute("style", "display: none");
+  timer.setAttribute("style", "display: inline");
   secondsLeft = 60;
   setTime();
-  randomNumber = generateQuestion();
-  quizSpace.addEventListener("click", answerClick(randomNumber, event))
-}
-
-function answerClick(randomNumber, event) {
-  checkAnswer(randomNumber, event);
   randomNumber = generateQuestion();
 }
 
@@ -122,6 +122,7 @@ clearButton.addEventListener("click", function(event) {
   }
   ]
   localStorage.setItem("highScores", JSON.stringify(highScores));
+  check.textContent = "Scores cleared"
 })
 
 function generateQuestion() {
@@ -145,18 +146,19 @@ function displayHighScores() {
   nameInput.setAttribute("style", "display: none");
   submitButton.setAttribute("style", "display: none");
   cancelButton.setAttribute("style", "display: none");
-  clearButton.setAttribute("style", "display: block");
+  clearButton.setAttribute("style", "display: initial");
+  check.textContent = "";
 
   //Get list of high scores from local storage
-  highScores = localStorage.getItem("highScores", JSON.parse(highScores));
+  highScores = JSON.parse(localStorage.getItem("highScores"));
   
   //Print list of high scores
-  answers[0].setAttribute('style','white-space: pre;')
+  check.setAttribute('style','white-space: pre;')
   for (let i = 0; i<highScores.length; i++) {
-    answers[0].textContent += highScores[i].name + "   " + highScores[i].correct + "\r\n";
+    check.textContent += highScores[i].name + "   " + highScores[i].correct + "\r\n";
 }
 
-  startButton.setAttribute("style", "display:block");
+  startButton.setAttribute("style", "display:inline");
   startButton.textContent = "Restart quiz";
 }
 
@@ -187,13 +189,13 @@ correct = 0;
 })
 
 //Make answer space clickable
-// quizSpace.addEventListener("click", function(event) {
-//   checkAnswer(randomNumber);
-//   randomNumber = generateQuestion();
-// })
+quizSpace.addEventListener("click", function(event) {
+  checkAnswer(randomNumber);
+  randomNumber = generateQuestion();
+})
 
 //Check the answer clicked on
-function checkAnswer(randomNumber, event) {
+function checkAnswer(randomNumber) {
   let element = event.target;
   //if the answer key matches the id of the element clicked, mark it correct
 

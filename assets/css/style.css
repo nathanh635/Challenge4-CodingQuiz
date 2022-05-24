@@ -11,7 +11,7 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
     padding: 10px;
     margin: auto;
     border-radius: 10px;
-
+display: none;
 }
 
 header {
@@ -35,6 +35,7 @@ header {
 
 main {
     margin-top: 100px;
+    text-align: center;
 }
 
 form {
@@ -51,4 +52,13 @@ h3 {
 
 #clear {
     display: none;
+}
+
+button {
+    text-align: center;
+    padding: 5px;
+    background-color: aquamarine;
+    border: 2px solid black;
+    color: black;
+    border-radius: 5px;
 }
