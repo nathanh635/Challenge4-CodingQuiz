@@ -5,10 +5,13 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 
 .answer {
     background-color: aquamarine;
-    border: 5px solid white;
+    border: 5px solid black;
     cursor: pointer;
     width: 300px;
+    padding: 10px;
     margin: auto;
+    border-radius: 10px;
+
 }
 
 header {
@@ -31,7 +34,6 @@ header {
 }
 
 main {
-    background-color: bisque;
     margin-top: 100px;
 }
 
@@ -41,4 +43,12 @@ form {
 
 #quiz {
     text-align: center;
+}
+
+h3 {
+    text-align: center;
+}
+
+#clear {
+    display: none;
 }

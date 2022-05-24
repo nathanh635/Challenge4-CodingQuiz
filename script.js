@@ -3,6 +3,7 @@ let timer = document.getElementById("timer");
 let startButton = document.getElementById("start");
 let submitButton = document.getElementById("submit");
 let cancelButton = document.getElementById("cancel");
+let clearButton = document.getElementById("clear");
 let nameInputForm = document.querySelector("#nameInputForm");
 let questionLabel = document.getElementById("question");
 let answers = document. querySelectorAll(".answer")
@@ -46,6 +47,13 @@ let questions = [
   }]
   ;
 
+function init() {
+  highScores = localStorage.getItem("highScores", JSON.parse(highScores));
+}
+
+//Start program by loading high scores from storage
+init()
+
   function endCard() {
     quizSpace.removeEventListener("click", answerClick());
 
@@ -53,28 +61,34 @@ let questions = [
     timer.setAttribute("display", "none");
     questionLabel.textContent = "You got " + correct + " answers correct.";
   
-  answers[0].textContent = "";
-  answers[1].textContent = "";
-  answers[2].textContent = "";
-  answers[3].textContent = "If you would like to submit your score, click Submit. If not, click Cancel."
-  check.textContent = "";
+    answers[0].textContent = "";
+    answers[1].textContent = "";
+    answers[2].textContent = "";
+    answers[3].textContent = "If you would like to submit your score, click Submit. If not, click Cancel."
+    check.textContent = "";
   
-  nameInput.setAttribute("style", "display: block");
-  submitButton.setAttribute("style", "display: inline");
-  cancelButton.setAttribute("style", "display: inline");
+    nameInput.setAttribute("style", "display: block");
+    submitButton.setAttribute("style", "display: inline");
+    cancelButton.setAttribute("style", "display: inline");
   }
   
+
+  //Set the timer
 function setTime() {
 
   var timerInterval = setInterval(function() {
     secondsLeft--;
-    timer.textContent = secondsLeft + " seconds remaining";
 
     if(secondsLeft <= 0) {
       //Once timer expires, quiz ends; calls function to display score
       clearInterval(timerInterval);
       timer.textContent = "0 seconds remaining";
       endCard();
+    } else if (secondsLeft = 1) {
+        timer.textContent = secondsLeft + " second remaining";
+    }
+    else {
+      timer.textContent = secondsLeft + " seconds remaining";
     }
 
   }, 1000);
@@ -82,22 +96,32 @@ function setTime() {
   return secondsLeft;
 }
 
+//Start the quiz when the start button is pressed
+
+startButton.addEventListener("click", function(event) {
+  startQuiz();
+})
 
 function startQuiz() {
   startButton.setAttribute("style", "display:none");
   secondsLeft = 60;
   setTime();
   randomNumber = generateQuestion();
-  quizSpace.addEventListener("click", answerClick(randomNumber))
+  quizSpace.addEventListener("click", answerClick(randomNumber, event))
 }
 
-function answerClick(randomNumber) {
-  checkAnswer(randomNumber);
+function answerClick(randomNumber, event) {
+  checkAnswer(randomNumber, event);
   randomNumber = generateQuestion();
 }
 
-startButton.addEventListener("click", function(event) {
-  startQuiz();
+clearButton.addEventListener("click", function(event) {
+  highScores = [
+    {name: "",
+    correct: 0
+  }
+  ]
+  localStorage.setItem("highScores", JSON.stringify(highScores));
 })
 
 function generateQuestion() {
@@ -116,16 +140,12 @@ function generateQuestion() {
 
 //need to ensure same question not asked multiple times
 
-//button to log scores and button to clear scores
-//button to return to quiz page
-
-
-
 function displayHighScores() {
   questionLabel.textContent = "High Scores";
   nameInput.setAttribute("style", "display: none");
   submitButton.setAttribute("style", "display: none");
   cancelButton.setAttribute("style", "display: none");
+  clearButton.setAttribute("style", "display: block");
 
   //Get list of high scores from local storage
   highScores = localStorage.getItem("highScores", JSON.parse(highScores));
@@ -167,13 +187,13 @@ correct = 0;
 })
 
 //Make answer space clickable
-quizSpace.addEventListener("click", function(event) {
-  checkAnswer(randomNumber);
-  randomNumber = generateQuestion();
-})
+// quizSpace.addEventListener("click", function(event) {
+//   checkAnswer(randomNumber);
+//   randomNumber = generateQuestion();
+// })
 
 //Check the answer clicked on
-function checkAnswer(randomNumber) {
+function checkAnswer(randomNumber, event) {
   let element = event.target;
   //if the answer key matches the id of the element clicked, mark it correct
 
