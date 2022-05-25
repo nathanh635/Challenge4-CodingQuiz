@@ -16,8 +16,7 @@ let randomNumber = 0;
 let highScores = [
   {name: "",
   correct: 0
-}
-]
+}];
 
 let questions = [
   {
@@ -44,8 +43,26 @@ let questions = [
     question: "How many objects will 'querySelector' grab?",
     answers: [1, "up to 5", 0, "all of them"],
     answerkey: 0
+  }, {
+    question: "What does DOM refer to?",
+    answers: ["direct order matrix", "dormant ordinary respirations", "destructive outer machine", "document object model"],
+    answerkey: 3
+  }, {
+    question: "What do you often need to prevent during API functions to ensure it doesn't conflict with your code or inputs?",
+    answers: ["the browser's default response", "the code exploding", "the html conflicting with the javascript", "the javascript conflicting with the CSSg"],
+    answerkey: 0
+  }, {
+    question: "What is it called when a click on one element applies to all the parent elements??",
+    answers: ["upgrading", "leveling", "bubbling", "handshaking"],
+    answerkey: 2
+  }, {
+    question: "Which of the following is not a valid eventListener?",
+    answers: ["click", "mouseover", "touch", "resize"],
+    answerkey: 2
   }]
   ;
+
+let questionsDefault = questions
 
 function init() {
   highScores = JSON.parse(localStorage.getItem("highScores"));
@@ -54,30 +71,11 @@ function init() {
 //Start program by loading high scores from storage
 init()
 
-  function endCard() {
- 
-    for (i=0; i<4; i++) {
-      answers[i].setAttribute("style", "display:none");
-    }
-
-    timer.setAttribute("style", "display:none");
-    questionLabel.textContent = "You got " + correct + " answers correct.";
-  
-
-    check.textContent = "If you would like to submit your score, enter your name and click Submit. If not, click Cancel."
-  
-    nameInput.setAttribute("style", "display: block");
-    submitButton.setAttribute("style", "display: inline");
-    cancelButton.setAttribute("style", "display: inline");
-  }
-  
-
   //Set the timer
 function setTime() {
 
   var timerInterval = setInterval(function() {
     secondsLeft--;
-    console.log(secondsLeft);
     
     if(secondsLeft <= 0) {
       //Once timer expires, quiz ends; calls function to display score
@@ -103,27 +101,25 @@ startButton.addEventListener("click", function(event) {
 })
 
 function startQuiz() {
+  //hide the start button after the quiz starts
   startButton.setAttribute("style", "display:none");
+
+  //show the answer blocks
   for (i=0; i<4; i++) {
     answers[i].setAttribute("style", "display:block");
   }
   check.textContent = "";
+
+  //reset things in case the "restart" button is clicked from the high scores screen
   clearButton.setAttribute("style", "display: none");
   timer.setAttribute("style", "display: inline");
+  questions = questionsDefault;
+
+//Set the timer and generate the first question
   secondsLeft = 60;
   setTime();
   randomNumber = generateQuestion();
 }
-
-clearButton.addEventListener("click", function(event) {
-  highScores = [
-    {name: "",
-    correct: 0
-  }
-  ]
-  localStorage.setItem("highScores", JSON.stringify(highScores));
-  check.textContent = "Scores cleared"
-})
 
 function generateQuestion() {
   //select random question
@@ -139,8 +135,65 @@ function generateQuestion() {
   return random;
 }
 
-//need to ensure same question not asked multiple times
+//Make answer space clickable
+quizSpace.addEventListener("click", function(event) {
+  checkAnswer(randomNumber);
 
+  if (questions.length ==1) {
+    secondsLeft = 0;
+    endCard();
+  } else {
+    questions.splice(randomNumber,1);
+  }
+
+  randomNumber = generateQuestion();
+})
+
+//Check the answer clicked on
+function checkAnswer(randomNumber) {
+  let element = event.target;
+  //if the answer key matches the id of the element clicked, mark it correct
+
+ if (element.matches("#answer1") && questions[randomNumber].answerkey == 0) {
+  correct++;
+  check.textContent = "Correct!"
+ }
+  else if (element.matches("#answer2") && questions[randomNumber].answerkey == 1) {
+    correct++;
+    check.textContent = "Correct!"
+  }
+  else if (element.matches("#answer3") && questions[randomNumber].answerkey == 2) {
+    correct++;
+    check.textContent = "Correct!"
+   }
+  else if (element.matches("#answer4") && questions[randomNumber].answerkey == 3) {
+    correct++;
+    check.textContent = "Correct!"
+  }
+  else {
+    check.textContent = "Incorrect!"
+    secondsLeft-=5;
+  }
+
+}
+//when the quiz is over, display results
+function endCard() {
+ 
+  for (i=0; i<4; i++) {
+    answers[i].setAttribute("style", "display:none");
+  }
+
+  timer.setAttribute("style", "display:none");
+  questionLabel.textContent = "You got " + correct + " answers correct.";
+
+  check.textContent = "If you would like to submit your score, enter your name and click Submit. If not, click Cancel."
+
+  nameInput.setAttribute("style", "display: block");
+  submitButton.setAttribute("style", "display: inline");
+  cancelButton.setAttribute("style", "display: inline");
+}
+
+//Display the high scores page
 function displayHighScores() {
   questionLabel.textContent = "High Scores";
   nameInput.setAttribute("style", "display: none");
@@ -161,10 +214,8 @@ function displayHighScores() {
   startButton.setAttribute("style", "display:inline");
   startButton.textContent = "Restart quiz";
 }
-
-
-submitButton.addEventListener("click", function(event) {
   //add score to highScores array
+submitButton.addEventListener("click", function(event) {
 
   let obj = {
     name: nameInputForm.value,
@@ -176,8 +227,9 @@ submitButton.addEventListener("click", function(event) {
      } else {
       highScores.push(obj);
      }
-    
-correct = 0;
+    //reset score variable
+         correct = 0;
+
   //sort highScores array by score
         highScores.sort((a, b) => {
           return b.correct - a.correct;
@@ -185,44 +237,18 @@ correct = 0;
 
         //write array highScores to local storage
   localStorage.setItem("highScores", JSON.stringify(highScores));
+
+  //go to the high scores page
   displayHighScores();
 })
 
-//Make answer space clickable
-quizSpace.addEventListener("click", function(event) {
-  checkAnswer(randomNumber);
-  randomNumber = generateQuestion();
+//clear the high scores
+clearButton.addEventListener("click", function(event) {
+  highScores = [
+    {name: "",
+    correct: 0
+  }
+  ]
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+  check.textContent = "Scores cleared"
 })
-
-//Check the answer clicked on
-function checkAnswer(randomNumber) {
-  let element = event.target;
-  //if the answer key matches the id of the element clicked, mark it correct
-
- if (element.matches("#answer1") && questions[randomNumber].answerkey == 0) {
-  correct++;
-  console.log(correct);
-  check.textContent = "Correct!"
- }
-  else if (element.matches("#answer2") && questions[randomNumber].answerkey == 1) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-  }
-  else if (element.matches("#answer3") && questions[randomNumber].answerkey == 2) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-   }
-  else if (element.matches("#answer4") && questions[randomNumber].answerkey == 3) {
-    correct++;
-    console.log(correct);
-    check.textContent = "Correct!"
-  }
-  else {
-      console.log(correct);
-    check.textContent = "Incorrect!"
-    secondsLeft-=5;
-  }
-
-}

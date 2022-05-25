@@ -3,6 +3,7 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 
 }
 
+/*format answer spaces*/
 .answer {
     background-color: aquamarine;
     border: 5px solid black;
@@ -14,6 +15,8 @@ font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans
 display: none;
 }
 
+
+/*format miscellaneous elements*/
 header {
     background-color: aquamarine;
     text-align: center;
@@ -54,6 +57,7 @@ h3 {
     display: none;
 }
 
+/*format buttons*/
 button {
     text-align: center;
     padding: 5px;
