@@ -242,6 +242,12 @@ submitButton.addEventListener("click", function(event) {
   displayHighScores();
 })
 
+//Cancel button does not add high score
+cancelButton.addEventListener("click", function(event) {
+    //go to the high scores page
+    displayHighScores();
+})
+
 //clear the high scores
 clearButton.addEventListener("click", function(event) {
   highScores = [

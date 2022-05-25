@@ -6,7 +6,7 @@ Clicking start will initiate the quiz, giving the user 60 seconds to complete it
 
 Wrong answers will subtract 5 seconds from the timer. Correct answers will add to the score.
 
-At the end of the quiz, the user has the opportunity to input a name to save along with their score. The program then prints a list of high scores to date, with higher scores at the top, which are saved in the local storage.
+At the end of the quiz, the user has the opportunity to input a name to save along with their score. The program then prints a list of high scores to date, with higher scores at the top, which are saved in the local storage. If the user clicks cancel, the high scores are displayed without adding the new score.
 
 There is also a button to clear the high scores and start anew, which clears the local storage. 
 
